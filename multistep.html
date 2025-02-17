@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multistep Form with Dynamic Step Indicator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        height: 100vh;
+        background: #f4f4f9;
+        margin: 0;
+      }
+
+      header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+        width: 100vw;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-weight: bold;
+        color: #a8d507;
+      }
+
+      h2 {
+        font-weight: bold;
+        font-size: 40px;
+      }
+
+      .container {
+        /* background: white; */
+        padding: 30px;
+        border-radius: 10px;
+        /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+        width: 50vw;
+        text-align: center;
+      }
+
+      /* Step Indicator */
+      .step-indicator {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .step-indicator .step-circle {
+        width: 30px;
+        height: 30px;
+        margin: 20px;
+        background: #ccc;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: bold;
+        z-index: 1;
+        position: relative;
+      }
+
+      .step-indicator .step-circle.active,
+      .step-indicator .step-circle.completed {
+        background: #4caf50;
+      }
+
+      .step {
+        display: none;
+      }
+
+      .step.active {
+        display: block;
+      }
+
+      .btn {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 5px;
+      }
+
+      .btn-step1 {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 20px 80px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 5px;
+      }
+
+      .btn:hover {
+        background: #45a049;
+      }
+
+      .btn-secondary {
+        background: #bbb;
+      }
+
+      .btn-secondary:hover {
+        background: #999;
+      }
+
+      input[type="text"],
+      input[type="email"] {
+        padding: 10px;
+        margin: 10px 0;
+        width: 80%;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>KING KONG</h1>
+    </header>
+    <div class="container">
+      <!-- Step Indicator -->
+      <div class="step-indicator">
+        <div class="step-circle" id="indicator-1">1</div>
+        <div class="step-circle" id="indicator-2">2</div>
+        <div class="step-circle" id="indicator-3">3</div>
+      </div>
+
+      <!-- Step 1: Get Started -->
+      <div class="step" id="step-1">
+        <h2>FREE 30-MINUTES SCALING GROWTH MAP SESSION</h2>
+        <p>
+          Claim your 100% FREE no-obligation 30-minutes scaling growth map call
+          ($1,000 value). This is strictly for people who are hungry for growth.
+          If that's you, then let's scale your biz to the moon!
+        </p>
+        <button class="btn-step1" onclick="goToStep(2)">Get Started</button>
+      </div>
+
+      <!-- Step 2: Ask for Name -->
+      <div class="step" id="step-2">
+        <h2>
+          Okay, We make this quick and painless (pinky promise). But before we
+          start - we don't wanna be rude...So what's your name?
+        </h2>
+        <input
+          type="text"
+          id="nameInput"
+          placeholder="Enter your name"
+          required
+        />
+        <div>
+          <button class="btn btn-secondary" onclick="goToStep(1)">
+            Previous
+          </button>
+          <button class="btn" onclick="goToStep(3)">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Greeting -->
+      <div class="step" id="step-3">
+        <h2 id="greeting"></h2>
+        <input
+          type="email"
+          id="emailInput"
+          placeholder="Enter your email"
+          required
+        />
+        <div>
+          <button class="btn btn-secondary" onclick="goToStep(2)">
+            Previous
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function goToStep(step) {
+        // Hide all steps
+        const steps = document.querySelectorAll(".step");
+        steps.forEach((s) => s.classList.remove("active"));
+
+        // Show the current step
+        const currentStep = document.getElementById(`step-${step}`);
+        currentStep.classList.add("active");
+
+        // Update step indicator
+        updateStepIndicator(step);
+
+        // If it's the greeting step, display the name
+        if (step === 3) {
+          const name = document.getElementById("nameInput").value;
+          const greeting = document.getElementById("greeting");
+          greeting.innerText = `Awesome! What's your email ${name}?`;
+        }
+      }
+
+      function updateStepIndicator(currentStep) {
+        // Loop through all indicators and activate all up to the current step
+        for (let i = 1; i <= 3; i++) {
+          const indicator = document.getElementById(`indicator-${i}`);
+          if (i < currentStep) {
+            indicator.classList.add("completed");
+            indicator.classList.remove("active");
+          } else if (i === currentStep) {
+            indicator.classList.add("active");
+            indicator.classList.remove("completed");
+          } else {
+            indicator.classList.remove("completed", "active");
+          }
+        }
+      }
+
+      // Start with step 1 visible and indicator active
+      document.getElementById("step-1").classList.add("active");
+      updateStepIndicator(1);
+    </script>
+  </body>
+</html>
